@@ -9,7 +9,7 @@ Class {
 	#category : #'Tutorial-PharoForBeginners'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'api - instantiation' }
 GtTextSlide >> create [
 	| container |
 	container := BlElement new

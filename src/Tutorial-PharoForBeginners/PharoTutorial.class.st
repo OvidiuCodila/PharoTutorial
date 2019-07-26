@@ -24,5 +24,4 @@ PharoTutorial >> start [
 				element: ((20 factorial) gtIntegerFor: GtPhlowView empty).
 			}.
 		^ slider.
-	
 ]

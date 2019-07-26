@@ -52,10 +52,7 @@ GtInfoElementSlide >> initialize [
 
 { #category : #accessing }
 GtInfoElementSlide >> text: aText [
-	|ceva|
 	text := aText asRopedText fontSize: 30; glamorousRegularFont.
-	ceva := BrTextParagraphLineSpacingAttribute new.
-	ceva applyOn: text.
 ]
 
 { #category : #'as yet unclassified' }
