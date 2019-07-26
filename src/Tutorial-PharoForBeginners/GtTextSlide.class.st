@@ -51,6 +51,14 @@ GtTextSlide >> firstTextWithFormat: aText [
 	firstText := aText.
 ]
 
+{ #category : #initialization }
+GtTextSlide >> initialize [
+	super initialize.
+	self subtitle: ''.
+	self firstText: ''.
+	self secondText: ''.
+]
+
 { #category : #accessing }
 GtTextSlide >> secondText: aText [
 	secondText := aText asRopedText fontSize: 20; glamorousRegularFont.
