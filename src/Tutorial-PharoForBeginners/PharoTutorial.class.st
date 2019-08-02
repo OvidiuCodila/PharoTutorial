@@ -132,7 +132,7 @@ PharoTutorial >> addCharactersSlidesIn: aSlider [
 	
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Characters';
-		firstText: 'It can be instantiated using $ operator').
+		firstText: 'They can be instantiated using $ operator').
 	aSlider addNewSlide: (GtInfoElementSlide new
 		text: 'Character Examples';
 		element: (GtInspector createOnPlayBook: basicExamplesBook)).
@@ -415,7 +415,7 @@ PharoTutorial >> addStringsSlidesIn: aSlider [
 		text: 'You can access each character using at: message';
 		element: (GtInspector createOnPlayBook: accessingBook)).
 	aSlider addNewSlide: (GtInfoElementSlide new
-		text: 'And you can concatenate string using the comma operator';
+		text: 'And you can concatenate strings using the comma operator';
 		element: (GtInspector createOnPlayBook: concatenationBook)).
 ]
 
