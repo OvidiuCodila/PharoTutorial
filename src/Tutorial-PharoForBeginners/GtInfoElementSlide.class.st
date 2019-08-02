@@ -33,7 +33,7 @@ GtInfoElementSlide >> create [
 								background: Color white;
 								margin: (BlInsets all: 20);
 								addChild: element)
-							size: 800@400).
+							size: 800@500).
 	^ container asPannableElement
 ]
 

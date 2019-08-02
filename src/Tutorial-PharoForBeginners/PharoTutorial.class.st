@@ -40,10 +40,53 @@ PharoTutorial >> addBinaryMessagesSlideIn: aSlider [
 ]
 
 { #category : #adding }
+PharoTutorial >> addBlockAssignationSlideIn: aSlider [
+	| aBook codeExample |
+	codeExample := 'x := [:a | a + 2].', Character cr asString,'x value:12.'.
+	aBook := self createBookFrom: {codeExample}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Blocks Assignation';
+		firstText: 'Blocks can be assgined to a variable then executed later').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Block Assignation Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addBlockExecutionSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom:
+		{'[:x | x+2] value: 5.'. '[:x :y| x + y] value:3 value:5.'. '[GTPlayground open] value.'}.
+		
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Blocks Execution';
+		firstText: 'We can execute a block by sending it value messages').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Blocks Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addCascadeOperatorSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'2+3;+5.'. '2+3. 2+5.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Cascade Operator';
+		firstText: 'It is noted with ;';
+		secondText: 'And it is useful to send messages to the same receiver').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Cascade Operator Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
 PharoTutorial >> addCharactersSlideIn: aSlider [
 	| basicExamplesBook specialCharsBook |
 	
-	basicExamplesBook := self createBookFrom: {'$A.'. '$A class.'. '$A charCode.'. 'Character space.'}.
+	basicExamplesBook := self createBookFrom: 
+		{'$A.'. '$A class.'. '$A charCode.'. 'Character allByteCharacters.'}.
 	specialCharsBook := self createBookFrom: {'Character space charCode.'. 'Character cr charCode.'}.
 	
 	aSlider addNewSlide: (GtTextSlide new
@@ -84,6 +127,34 @@ PharoTutorial >> addKeywordMessagesSlideIn: aSlider [
 ]
 
 { #category : #adding }
+PharoTutorial >> addMathematicalPrecedenceSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'2*10+2.'. '2+2*10.'. '2+(2*10).'. '8-5/2.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Mathematical Precedence';
+		firstText: 'Traditional precedence rules from mathematics do not apply in Pharo';
+		secondText: 'Messages are executed from left to right. Only parentheses can change this').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Mathematical Precedence Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addMessagesExecutionOrderSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'2 + 3 squared.'. '2 raisedTo: 3 + 2.'. '-3 abs negated reciprocal.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Messages Execution Order';
+		firstText: 'The order of execution is: Unary -> Binary -> Keywords';
+		secondText: 'Between messages of similar precedence, they are executed from left to right').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Messages Execution Order Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
 PharoTutorial >> addNumbersSlideIn: aSlider [
 	| aBook |
 	
@@ -95,6 +166,19 @@ PharoTutorial >> addNumbersSlideIn: aSlider [
 		secondText: 'They all respond to many messages evaluating mathematical expressions').
 	aSlider addNewSlide: (GtInfoElementSlide new
 		text: 'Number Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addParenthesesSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'(2+3) squared.'. '(2 raisedTo: 3) + 2.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Parentheses';
+		firstText: 'They can change the order of execution').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Parentheses Examples';
 		element: (GtInspector createOnPlayBook: aBook)).
 ]
 
@@ -190,6 +274,19 @@ PharoTutorial >> start [
 	self addUnaryMessagesSlidesIn: slider.
 	self addBinaryMessagesSlideIn: slider.
 	self addKeywordMessagesSlideIn: slider.
+	self addMessagesExecutionOrderSlideIn: slider.
+	self addParenthesesSlideIn: slider.
+	self addMathematicalPrecedenceSlideIn: slider.
+	self addCascadeOperatorSlideIn: slider.
+	
+	slider addNewSlide: (GtTitleSlide new
+				titleText: ('Pharo101' asRopedText fontSize: 70);
+				subtitleText: ('Blocks' asRopedText fontSize:50; foreground: Color gray)).
+	slider addNewSlide: (GtTextSlide new
+				firstText: 'They are anonymous methods that can be stored into variables and executed on demand';
+				secondText: 'And are delimited by square brackets []').
+	self addBlockExecutionSlideIn: slider.
+	self addBlockAssignationSlideIn: slider.
 	
 	^ slider.
 ]
