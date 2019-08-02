@@ -4,24 +4,192 @@ Class {
 	#category : #'Tutorial-PharoForBeginners'
 }
 
+{ #category : #adding }
+PharoTutorial >> addArraysSlideIn: aSlider [
+	| firstExamplesBook secondExamplesBook |
+	firstExamplesBook := self createBookFrom: {'#(1 2 3).'. '#(1 2 3 #(4 5 6)) size.'. '#() isEmpty.'.}.
+	secondExamplesBook := self createBookFrom: 
+		{'#(1 2 3) first.'. '#(4 5 6) last.'. '#(''hello'' ''World'') at: 2 put: ''Pharo''; yourself.'}.
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Arrays';
+		firstText: 'Literal Arrays are created at parse time').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Array Examples';
+		element: (GtInspector createOnPlayBook: firstExamplesBook)).
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'More Array Examples';
+		element: (GtInspector createOnPlayBook: secondExamplesBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addBinaryMessagesSlideIn: aSlider [
+	| firstBinaryExamplesBook secondBinaryExamplesBook |
+	firstBinaryExamplesBook := self createBookFrom: {'3*2.'. 'Date today + 3 weeks.'. 'true & false.'}.
+	secondBinaryExamplesBook := self createBookFrom: {'10 @ 10.'. '10 <= 12.'. '''ab'',''cd''.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Binary Messages';
+		firstText: 'They have the following form: anObject aMessage anotherObject';
+		secondText: 'And they are always operands like: +, *, &, |').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Binary Messages Examples';
+		element: (GtInspector createOnPlayBook: firstBinaryExamplesBook)).
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'More Binary Messages Examples';
+		element: (GtInspector createOnPlayBook: secondBinaryExamplesBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addCharactersSlideIn: aSlider [
+	| basicExamplesBook specialCharsBook |
+	
+	basicExamplesBook := self createBookFrom: {'$A.'. '$A class.'. '$A charCode.'. 'Character space.'}.
+	specialCharsBook := self createBookFrom: {'Character space charCode.'. 'Character cr charCode.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Characters';
+		firstText: 'It can be instantiated using $ operator').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Character Examples';
+		element: (GtInspector createOnPlayBook: basicExamplesBook)).
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Special Characters';
+		element: (GtInspector createOnPlayBook: specialCharsBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addDynamicArraysSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'{ (2+3). (6*6) }.'. '{(2+3) . (6*6) . ''Hello'', ''world''} size.'}.
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Dynamic Arrays';
+		firstText: 'Dynamic Arrays are created at execution time').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Dynamic Array Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addKeywordMessagesSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'4 between: 0 and: 10.'. '1 max: 3.'. 'Color r:1 g:0 b:0.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Keyword Messages';
+		firstText: 'They are messages with arguments';
+		secondText: 'And have the following form: anObject aKey: anotherObject aKey2: anotherObject2').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Keyword Messages Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addNumbersSlideIn: aSlider [
+	| aBook |
+	
+	aBook := self createBookFrom: {'2+3.'. '20 factorial.'. '1/3.'. '1 class maxVal.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Numbers';
+		firstText: '1, 2, 100, 2/3 ... are all Numbers';
+		secondText: 'They all respond to many messages evaluating mathematical expressions').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Number Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addStringsSlideIn: aSlider [
+	| basicExamplesBook accessingBook concatenationBook |
+	
+	basicExamplesBook := self createBookFrom: {'''This is a string''.'. 
+		'''This is a string'' size.'. '''abc'' asUppercase.'. '''Hello world'' reverse.'}.	
+	accessingBook := self createBookFrom: {'''Hello world'' at: 1.'. '''Hello world'' at: 11.'}.
+	concatenationBook := self createBookFrom: {'''Hello'','' world''.'. '''Strings are'','' cool''.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Strings';
+		firstText: 'A String is a collection of characters';
+		secondText: 'To create them, you can use single quotes').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'String Examples';
+		element: (GtInspector createOnPlayBook: basicExamplesBook)).
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'You can access each character using at: message';
+		element: (GtInspector createOnPlayBook: accessingBook)).
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'And you can concatenate string using the comma operator';
+		element: (GtInspector createOnPlayBook: concatenationBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addSymbolsSlideIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'''MySymbol'' asSymbol.'. '#MySymbol asString.'. 
+		'(2 asString) == (2 asString).'. '(2 asString) asSymbol == (2 asString) asSymbol.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Symbols';
+		firstText: 'A Symbol is a String which is guaranteed to be globally unique.';
+		secondText: 'There is one an only Symbol #MySymbol, but there can be several ''MySymbol'' String objects').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Symbol Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #adding }
+PharoTutorial >> addUnaryMessagesSlidesIn: aSlider [
+	| aBook |
+	aBook := self createBookFrom: {'1 class.'. 'false not.'. 'Date today.'. 'Float pi.'}.
+	
+	aSlider addNewSlide: (GtTextSlide new
+		subtitle: 'Unary Messages';
+		firstText: 'They have the following form: anObject aMessage').
+	aSlider addNewSlide: (GtInfoElementSlide new
+		text: 'Unary Messages Examples';
+		element: (GtInspector createOnPlayBook: aBook)).
+]
+
+{ #category : #'as yet unclassified' }
+PharoTutorial >> createBookFrom: aCollection [
+	| aBook |
+	aBook := GtPlayBook newDefault.
+	aBook pages first snippets first sourceCode: (aCollection at: 1).
+	(aCollection size > 1)
+		ifTrue: [ aCollection allButFirst do: [:el |
+				aBook pages first addSnippet: GtCoderSnippet new.
+				aBook pages last snippets last sourceCode: el] ].
+	^ aBook.
+]
+
 { #category : #accessing }
 PharoTutorial >> start [
 	| slider |
-	slider := GtSlider new
-		slides: { 
-			GtTitleSlide new
+	
+	slider := GtSlider new.
+	slider addNewSlide: (GtTitleSlide new
 				titleText: ('Pharo101' asRopedText fontSize: 70);
-				subtitleText: ('Tutorial for beginners' asRopedText fontSize: 50; foreground: Color gray). 
-			GtTitleSlide new
+				subtitleText: ('Tutorial for beginners' asRopedText fontSize: 50; foreground: Color gray)).
+				
+	slider addNewSlide: (GtTitleSlide new
 				titleText: ('Pharo101' asRopedText fontSize: 70);
-				subtitleText: ('Basic types' asRopedText fontSize:50; foreground: Color gray).
-			GtTextSlide new
-				subtitle: 'Numbers';
-				firstText: '1, 2, 100, 2/3 ... are all Numbers';
-				secondText: 'They all respond to many messages evaluating mathematical expressions'.
-			GtInfoElementSlide new
-				text: '20 factorial';
-				element: ((20 factorial) gtIntegerFor: GtPhlowView empty).
-			}.
-		^ slider.
+				subtitleText: ('Basic types' asRopedText fontSize:50; foreground: Color gray)).
+	self addNumbersSlideIn: slider.
+	self addCharactersSlideIn: slider.
+	self addStringsSlideIn: slider.
+	self addSymbolsSlideIn: slider.
+	self addArraysSlideIn: slider.
+	self addDynamicArraysSlideIn: slider.
+	
+	slider addNewSlide: (GtTitleSlide new
+				titleText: ('Pharo101' asRopedText fontSize: 70);
+				subtitleText: ('Messages' asRopedText fontSize:50; foreground: Color gray)).
+	slider addNewSlide: (GtTextSlide new
+				firstText: 'Messages are sent to objects.';
+				secondText: 'There are three types of messages: Unary, Binary and Keyword').
+	self addUnaryMessagesSlidesIn: slider.
+	self addBinaryMessagesSlideIn: slider.
+	self addKeywordMessagesSlideIn: slider.
+	
+	^ slider.
 ]

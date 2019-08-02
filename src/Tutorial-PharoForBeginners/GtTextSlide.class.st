@@ -29,14 +29,14 @@ GtTextSlide >> create [
 					c linear horizontal alignCenter.
 					c linear vertical alignCenter];
 				padding: (BlInsets top: 20; bottom: 20);
-				margin: (BlInsets left: 50);
+				margin: (BlInsets left: 20);
 				text: firstText);
 		addChild: (BlTextElement new
 				constraintsDo: [ :c |
 					c linear horizontal alignCenter.
 					c linear vertical alignCenter];
 				padding: (BlInsets top: 20; bottom: 20);
-				margin: (BlInsets left: 50);
+				margin: (BlInsets left: 20);
 				text: secondText).
 	^ container asPannableElement
 ]

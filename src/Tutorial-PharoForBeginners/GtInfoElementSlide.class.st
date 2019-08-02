@@ -15,7 +15,7 @@ GtInfoElementSlide >> create [
 		constraintsDo: [:c |
 			c horizontal fitContent.
 			c vertical fitContent ];
-		layout: (BlGridLayout new vertical);
+		layout: (BlLinearLayout vertical);
 		addChild: (BlTextElement new
 				constraintsDo: [ :c |
 					c linear horizontal alignCenter.
@@ -28,13 +28,12 @@ GtInfoElementSlide >> create [
 				ct linear horizontal alignCenter.
 				ct linear vertical alignCenter ];
 			layout: (BlGridLayout new vertical));
-			addChild: ((element asElementDo: [:e | 
-							BlElement new 
+			addChild: ((BlElement new 
 								look: BrShadowLook;
 								background: Color white;
 								margin: (BlInsets all: 20);
-								addChild: e])
-							size: 400@400).
+								addChild: element)
+							size: 800@400).
 	^ container asPannableElement
 ]
 
