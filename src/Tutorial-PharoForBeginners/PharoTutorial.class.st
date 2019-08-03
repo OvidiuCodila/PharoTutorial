@@ -9,19 +9,25 @@ Class {
 
 { #category : #adding }
 PharoTutorial >> addArraysSlidesIn: aSlider [
-	| firstExamplesBook secondExamplesBook |
-	firstExamplesBook := self createBookFrom: {'#(1 2 3).'. '#(1 2 3 #(4 5 6)) size.'. '#() isEmpty.'.}.
-	secondExamplesBook := self createBookFrom: 
-		{'#(1 2 3) first.'. '#(4 5 6) last.'. '#(''hello'' ''World'') at: 2 put: ''Pharo''; yourself.'}.
+	| examplesBook |
+	examplesBook := self createBookFrom: {
+		'"Creates an Array with 3 elements"
+#(1 2 3).'. 
+		'"Creates an Array with 4 elements, the forth one being another Array"
+#(1 2 3 #(4 5 6)) size.'. 
+		'"Creates an empty Array"
+#() isEmpty.'.
+		'#(1 2 3) first.'.
+		'#(4 5 6) last.'.
+		'"Replacing World with Pharo by specifying the index in the array"
+#(''hello'' ''World'') at: 2 put: ''Pharo''; yourself.'
+	}.
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Arrays';
 		firstText: 'Literal Arrays are created at parse time').
 	aSlider addNewSlide: (GtInfoElementSlide new
 		text: 'Array Examples';
-		element: (GtInspector createOnPlayBook: firstExamplesBook)).
-	aSlider addNewSlide: (GtInfoElementSlide new
-		text: 'More Array Examples';
-		element: (GtInspector createOnPlayBook: secondExamplesBook)).
+		element: (GtInspector createOnPlayBook: examplesBook)).
 ]
 
 { #category : #adding }
@@ -39,9 +45,18 @@ PharoTutorial >> addBasicTypesSlidesIn: aSlider [
 
 { #category : #adding }
 PharoTutorial >> addBinaryMessagesSlidesIn: aSlider [
-	| firstBinaryExamplesBook secondBinaryExamplesBook |
-	firstBinaryExamplesBook := self createBookFrom: {'3*2.'. 'Date today + 3 weeks.'. 'true & false.'}.
-	secondBinaryExamplesBook := self createBookFrom: {'10 @ 10.'. '10 <= 12.'. '''ab'',''cd''.'}.
+	| binaryExamplesBook |
+	binaryExamplesBook := self createBookFrom: {
+		'"The message * applys to object 3 with the object 2"
+3*2.'. 
+		'Date today + 3 weeks.'. 
+		'"The operand & is also a binary message. Here sent to true with object false"
+true & false.'.
+		'"The message here is <="
+10 <= 12.'.
+		'"The message comma applys to the object ''ab'' with the object ''cd'' concatenating the both"
+''ab'',''cd''.'
+	}.
 	
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Binary Messages';
@@ -49,10 +64,7 @@ PharoTutorial >> addBinaryMessagesSlidesIn: aSlider [
 		secondText: 'And they are always operands like: +, *, &, |').
 	aSlider addNewSlide: (GtInfoElementSlide new
 		text: 'Binary Messages Examples';
-		element: (GtInspector createOnPlayBook: firstBinaryExamplesBook)).
-	aSlider addNewSlide: (GtInfoElementSlide new
-		text: 'More Binary Messages Examples';
-		element: (GtInspector createOnPlayBook: secondBinaryExamplesBook)).
+		element: (GtInspector createOnPlayBook: binaryExamplesBook)).
 ]
 
 { #category : #adding }
@@ -103,10 +115,11 @@ PharoTutorial >> addBlocksSlidesIn: aSlider [
 PharoTutorial >> addCascadeOperatorSlidesIn: aSlider [
 	| aBook |
 	aBook := self createBookFrom: {
-		'"Both + messages are sent to 2"'.
-		'2+3;+5.'.
-		'"The one above is equivalent to: "'.
-		'2+3. 2+5.'}.
+		'"Both + messages are sent to 2"
+2+3;+5.'.
+		'"The one above is equivalent to: "
+2+3. 2+5.'
+	}.
 	
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Cascade Operator';
@@ -119,15 +132,19 @@ PharoTutorial >> addCascadeOperatorSlidesIn: aSlider [
 
 { #category : #adding }
 PharoTutorial >> addCharactersSlidesIn: aSlider [
-	| basicExamplesBook specialCharsBook |
+	| basicExamplesBook |
 	
 	basicExamplesBook := self createBookFrom: {
 		'$A.'. 
 		'$A class.'. 
 		'$A charCode.'.  
-		'"You can print all 256 characters of the ASCII extended set"',Character cr asString,'Character 			allByteCharacters.'
+		'"You can print all 256 characters of the ASCII extended set"
+Character allByteCharacters.'.
+		'"Showing the ASCII code of the space character"
+Character space charCode.'.
+		'"Showing the ASCII code of the new-line character"
+Character cr charCode.'
 	}.
-	specialCharsBook := self createBookFrom: {'Character space charCode.'. 'Character cr charCode.'}.
 	
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Characters';
@@ -135,9 +152,6 @@ PharoTutorial >> addCharactersSlidesIn: aSlider [
 	aSlider addNewSlide: (GtInfoElementSlide new
 		text: 'Character Examples';
 		element: (GtInspector createOnPlayBook: basicExamplesBook)).
-	aSlider addNewSlide: (GtInfoElementSlide new
-		text: 'Special Characters';
-		element: (GtInspector createOnPlayBook: specialCharsBook)).
 ]
 
 { #category : #adding }
@@ -170,7 +184,10 @@ PharoTutorial >> addConditionalsSlidesIn: aSlider [
 { #category : #adding }
 PharoTutorial >> addDynamicArraysSlidesIn: aSlider [
 	| aBook |
-	aBook := self createBookFrom: {'{ (2+3). (6*6) }.'. '{(2+3) . (6*6) . ''Hello'', ''world''} size.'}.
+	aBook := self createBookFrom: {
+		'{ (2+3). (6*6) }.'. 
+		'{(2+3) . (6*6) . ''Hello'', ''world''} size.'
+	}.
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Dynamic Arrays';
 		firstText: 'Dynamic Arrays are created at execution time').
@@ -180,52 +197,13 @@ PharoTutorial >> addDynamicArraysSlidesIn: aSlider [
 ]
 
 { #category : #adding }
-PharoTutorial >> addEnvironmentSlidesIn: aSlider [
-	| inspectorExamplesBook browserExamplesBook debuggerExamplesBook |
-	inspectorExamplesBook := self createBookFrom: {
-		'Date today inspect.'.
-		'PharoTutorial inspect.'
-	}.
-	browserExamplesBook := self createBookFrom: {
-		'PharoTutorial browse.'
-	}.
-	debuggerExamplesBook := self createBookFrom: {
-		'2/0.'
-	}.
-
-	aSlider addNewSlide: (GtTitleSlide new
-				titleText: ('Pharo101' asRopedText fontSize: 70);
-				subtitleText: ('Pharo environment' asRopedText fontSize:50; foreground: Color gray)).
-	aSlider addNewSlide: (GtTextSlide new
-		subtitle: 'The Inspector';
-		firstText: 'Pharo is full of objects: windows, text, numbers, dates, colors and much more';
-		secondText: 'Every object understands the message #inspect resulting in a window showing details about the object').
-	aSlider addNewSlide: (GtInfoElementSlide new
-		text: 'Inspector Examples';
-		element: (GtInspector createOnPlayBook: inspectorExamplesBook)).
-	aSlider addNewSlide: (GtTextSlide new
-		subtitle: 'The Browser';
-		firstText: 'Using the message #browse on a class, you get a more detailed view of that class').
-	aSlider addNewSlide: (GtInfoElementSlide new
-		text: 'Browser Examples';
-		element: (GtInspector createOnPlayBook: browserExamplesBook)).
-	aSlider addNewSlide: (GtTextSlide new
-		subtitle: 'The Debugger';
-		firstText: 'It is the most famous tool of Smalltalk environment';
-		secondText: 'It will open as soon as an unmanaged Exception occurs').
-	aSlider addNewSlide: (GtInfoElementSlide new
-		text: 'Debugger Examples';
-		element: (GtInspector createOnPlayBook: debuggerExamplesBook)).
-]
-
-{ #category : #adding }
 PharoTutorial >> addInstantiationSlidesIn: aSlider [
 	| aBook |
 	aBook := self createBookFrom: {
-		'"The message #allInstances answers an array with all the instances of the class it is sent to"'.
-		'SimpleButtonMorph allInstances size.'.
-		'"Below, the message #new will create an instance of the class it is sent to, thus resulting in an OrderedCollection with 0 elements."'.
-		'collection := OrderedCollection new.'
+		'"The message #allInstances answers an array with all the instances of the class it is sent to"
+SimpleButtonMorph allInstances size.'.
+		'"Below, the message #new will create an instance of the class it is sent to, thus resulting in an OrderedCollection with 0 elements."
+collection := OrderedCollection new.'
 	}.
 	
 	aSlider addNewSlide: (GtTitleSlide new
@@ -264,11 +242,10 @@ PharoTutorial >> addIteratorsSlidesIn: aSlider [
 PharoTutorial >> addKeywordMessagesSlidesIn: aSlider [
 	| aBook |
 	aBook := self createBookFrom: {
-		'"The message is between:and: sent to object 4"'.
-		'4 between: 0 and: 10.'. 
-		'1 max: 3.'.
-		'"The message is r:g:b: implemented on class Color"'.
-		'Color r:1 g:0 b:0.'
+		'"The message is between:and: sent to object 4"
+4 between: 0 and: 10.'. 
+		'"The message is r:g:b: implemented on class Color"
+Color r:1 g:0 b:0.'
 	}.
 	
 	aSlider addNewSlide: (GtTextSlide new
@@ -284,9 +261,12 @@ PharoTutorial >> addKeywordMessagesSlidesIn: aSlider [
 PharoTutorial >> addLoopsSlidesIn: aSlider [
 	| aBook firstExample secondExample thirdExample enterChar |
 	enterChar := Character cr asString.
-	firstExample := 'x := 0.',enterChar,'1 to: 10 do: [:i | x := x+i].',enterChar, '^ x.'.
-	secondExample := 'x := 0.',enterChar,'1 to: 10 by: 2 do: [:i | x := x+i].',enterChar, '^ x.'.
-	thirdExample := 'x := 0.',enterChar,'10 to: 0 by: -2 do: [:i | x := x+i].',enterChar, '^ x.'.
+	firstExample := '"From 1 to 10, i gets every value and we add that to x"
+x := 0.',enterChar,'1 to: 10 do: [:i | x := x+i].',enterChar, '^ x.'.
+	secondExample := '"Same as before, but i gets every other value ( 1, 3, .. )"
+x := 0.',enterChar,'1 to: 10 by: 2 do: [:i | x := x+i].',enterChar, '^ x.'.
+	thirdExample := '"Here i goes from 10 to 0, getting every other value"
+x := 0.',enterChar,'10 to: 0 by: -2 do: [:i | x := x+i].',enterChar, '^ x.'.
 	
 	aBook := self createBookFrom: {
 		firstExample.
@@ -306,7 +286,16 @@ PharoTutorial >> addLoopsSlidesIn: aSlider [
 { #category : #adding }
 PharoTutorial >> addMathematicalPrecedenceSlidesIn: aSlider [
 	| aBook |
-	aBook := self createBookFrom: {'2*10+2.'. '2+2*10.'. '2+(2*10).'. '8-5/2.'}.
+	aBook := self createBookFrom: {
+		'"First we do (2*10) and then we add 2 to the result"
+2*10+2.'. 
+		'"But here, we do (2+2) first and then multiply the result with 10"
+2+2*10.'. 
+		'"Using the parentheses we change the order, this being equivalent to the first example, not the second"
+2+(2*10).'. 
+		'"First we do (8-5) and then divide the result by 2"
+8-5/2.'
+	}.
 	
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Mathematical Precedence';
@@ -320,7 +309,14 @@ PharoTutorial >> addMathematicalPrecedenceSlidesIn: aSlider [
 { #category : #adding }
 PharoTutorial >> addMessagesExecutionOrderSlidesIn: aSlider [
 	| aBook |
-	aBook := self createBookFrom: {'2 + 3 squared.'. '2 raisedTo: 3 + 2.'. '-3 abs negated reciprocal.'}.
+	aBook := self createBookFrom: {
+		'"This is equivalent to: (2 + (3 squared)), squared being an Unaru message and + being a Binary
+"2 + 3 squared.'. 
+		'"This is equivalent to: (2 raisedTo: (3+2)), + being a Binary message and raisedTo: a Keyword
+"2 raisedTo: 3 + 2.'. 
+		'"This is equivalent to: (((-3 abs)negated)reciprocal): all being Unary messages, so they are executed in order"
+-3 abs negated reciprocal.'
+}.
 	
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Messages Execution Order';
@@ -366,7 +362,12 @@ PharoTutorial >> addNumbersSlidesIn: aSlider [
 { #category : #adding }
 PharoTutorial >> addParenthesesSlidesIn: aSlider [
 	| aBook |
-	aBook := self createBookFrom: {'(2+3) squared.'. '(2 raisedTo: 3) + 2.'}.
+	aBook := self createBookFrom: {
+		'"Instead of executing (3 squared) first being an Unary message, using the parentheses we do th (2+3) first even though it is a Binary message"
+(2+3) squared.'. 
+		'"Doing the Keyword message first and then the Binary one"
+(2 raisedTo: 3) + 2.'
+	}.
 	
 	aSlider addNewSlide: (GtTextSlide new
 		subtitle: 'Parentheses';
@@ -380,8 +381,8 @@ PharoTutorial >> addParenthesesSlidesIn: aSlider [
 PharoTutorial >> addReflectionSlidesIn: aSlider [
 	| aBook |
 	aBook := self createBookFrom: {
-		'"For example, we can see all the methods implemented in a class"'.
-		'PharoTutorial selectors.'
+		'"For example, we can see all the methods implemented in a class"
+PharoTutorial selectors.'
 	}.
 	
 	aSlider addNewSlide: (GtTitleSlide new
@@ -422,10 +423,12 @@ PharoTutorial >> addStringsSlidesIn: aSlider [
 PharoTutorial >> addSymbolsSlidesIn: aSlider [
 	| aBook |
 	aBook := self createBookFrom: {
-		'''MySymbol'' asSymbol.'. 
-		'#MySymbol asString.'.
-		'"Message == return true is the two objects are the SAME"'.
-		'(2 asString) == (2 asString).'. 
+		'"Turns the String into a Symbol"
+''MySymbol'' asSymbol.'. 
+		'"Turns the Symbol into a String"
+#MySymbol asString.'.
+		'"Message == return true is the two objects are the SAME"
+(2 asString) == (2 asString).'. 
 		'(2 asString) asSymbol == (2 asString) asSymbol.'
 	}.
 	
@@ -479,7 +482,6 @@ PharoTutorial >> start [
 	self addConditionalsAndLoopsSlidesIn: slider.
 	self addInstantiationSlidesIn: slider.
 	self addReflectionSlidesIn: slider.
-	self addEnvironmentSlidesIn: slider.
 	
 	slider addNewSlide: (GtTitleSlide new
 				titleText: ('Enjoy programming in Pharo' asRopedText fontSize: 70)).
