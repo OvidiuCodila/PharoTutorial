@@ -124,9 +124,8 @@ PharoTutorial >> addCharactersSlidesIn: aSlider [
 	basicExamplesBook := self createBookFrom: {
 		'$A.'. 
 		'$A class.'. 
-		'$A charCode.'. 
-		'"You can print all 256 characters of the ASCII extended set"'. 
-		'Character allByteCharacters.'
+		'$A charCode.'.  
+		'"You can print all 256 characters of the ASCII extended set"',Character cr asString,'Character 			allByteCharacters.'
 	}.
 	specialCharsBook := self createBookFrom: {'Character space charCode.'. 'Character cr charCode.'}.
 	
