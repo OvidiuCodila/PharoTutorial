@@ -34,8 +34,6 @@ CompiledMethod >> gtNodesViewFor: aView [
 				add: RBLiteralArrayNode].
 		(aNode isKindOf: RBCascadeNode) ifTrue: [(dict at: 'CascadeNode'
 			ifAbsentPut: OrderedCollection new) add: RBCascadeNode].
-		(aNode isKindOf: RBGlobalNode) ifTrue: [(dict at: 'GlobalNode'
-			ifAbsentPut: OrderedCollection new) add: RBGlobalNode].
 		(aNode isKindOf: RBReturnNode) ifTrue: [(dict at: 'ReturnNode'
 			ifAbsentPut: OrderedCollection new) add: RBReturnNode].
 	].
