@@ -1,5 +1,5 @@
 Class {
-	#name : #GtInfoElementSlide,
+	#name : #GtTextAndElementSlide,
 	#superclass : #GtSlide,
 	#instVars : [
 		'text',
@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #'api - instantiation' }
-GtInfoElementSlide >> create [
+GtTextAndElementSlide >> create [
 	| container |
 	container := BlElement new
 		constraintsDo: [:c |
@@ -38,23 +38,23 @@ GtInfoElementSlide >> create [
 ]
 
 { #category : #accessing }
-GtInfoElementSlide >> element: anElement [
+GtTextAndElementSlide >> element: anElement [
 	element := anElement.
 ]
 
 { #category : #initialization }
-GtInfoElementSlide >> initialize [
+GtTextAndElementSlide >> initialize [
 	super initialize.
 	self text: ''.
 	self element: nil.
 ]
 
 { #category : #accessing }
-GtInfoElementSlide >> text: aText [
+GtTextAndElementSlide >> text: aText [
 	text := aText asRopedText fontSize: 30; glamorousRegularFont.
 ]
 
 { #category : #'as yet unclassified' }
-GtInfoElementSlide >> textWithFormat: aText [
+GtTextAndElementSlide >> textWithFormat: aText [
 	text := aText.
 ]

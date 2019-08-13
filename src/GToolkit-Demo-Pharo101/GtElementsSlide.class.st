@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMoreElementsSlide,
+	#name : #GtElementsSlide,
 	#superclass : #GtSlide,
 	#instVars : [
 		'elements'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-GtMoreElementsSlide >> create [
+GtElementsSlide >> create [
 	| container |
 	container := BlElement new
 		constraintsDo: [:c |
@@ -27,12 +27,12 @@ GtMoreElementsSlide >> create [
 ]
 
 { #category : #accessing }
-GtMoreElementsSlide >> elements: someElements [
+GtElementsSlide >> elements: someElements [
 	elements := someElements.
 ]
 
 { #category : #initialization }
-GtMoreElementsSlide >> initialize [
+GtElementsSlide >> initialize [
 	super initialize.
 	self elements: nil.
 ]
