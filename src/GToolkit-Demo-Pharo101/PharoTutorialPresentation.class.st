@@ -1,5 +1,5 @@
 "
-I am a tutorial for the beginners.
+I am a tutorial presentation for beginners.
 "
 Class {
 	#name : #PharoTutorialPresentation,

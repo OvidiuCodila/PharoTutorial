@@ -1,3 +1,6 @@
+"
+I am a Slide desgine that gets a collection of elements and displays them. I can be included in presentations.
+"
 Class {
 	#name : #GtElementsSlide,
 	#superclass : #GtSlide,

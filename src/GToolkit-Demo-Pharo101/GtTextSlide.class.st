@@ -1,3 +1,6 @@
+"
+I am a Slide desgine that gets a Text and displays it. I can be included in presentations.
+"
 Class {
 	#name : #GtTextSlide,
 	#superclass : #GtSlide,
