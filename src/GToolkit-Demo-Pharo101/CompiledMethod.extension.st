@@ -142,7 +142,21 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 				constraintsDo: [ :c |
 					c horizontal matchParent.
 					c vertical matchParent ];
-				addChild: (editorElement);
-				addChild: (list)
+				addChild: (BlElement new 
+					look: BrShadowLook; 
+					background: Color white;
+					margin: (BlInsets all: 20);
+					size: 500@500;
+					addChild: editorElement);
+				addChild: (BlElement new
+					constraintsDo: [ :c |
+						c linear horizontal alignCenter.
+						c vertical fitContent ];
+					look: BrShadowLook; 
+					background: Color white;
+					margin: (BlInsets all: 20);
+					padding: (BlInsets all: 20);
+					size: 500@500;
+					addChild: list).
 		].
 ]
