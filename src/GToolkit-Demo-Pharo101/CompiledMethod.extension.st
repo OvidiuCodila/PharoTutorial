@@ -77,43 +77,43 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 			(aNode isKindOf: RBSelfNode) ifTrue: [(dict at: 'SelfCalls'
 				ifAbsentPut: OrderedCollection new) add: (aNode start)].
 			(aNode isKindOf: RBPragmaNode) ifTrue: [(dict at: 'Pragmas'
-				ifAbsentPut: OrderedCollection new) add: RBPragmaNode].
+				ifAbsentPut: OrderedCollection new) add: (aNode left)].
 			(aNode isKindOf: RBLiteralValueNode) ifTrue: [(dict at:
 				'LiteralValues' ifAbsentPut: OrderedCollection new) add:
-					RBLiteralValueNode].
+					(aNode start)].
 			((aNode isKindOf: RBMessageNode) and: [aNode isUnary]) ifTrue:
 				[(dict at: 'UnaryMessages' ifAbsentPut:
-					OrderedCollection new) add: RBMessageNode].
+					OrderedCollection new) add: (aNode keywordsPositions at: 1)].
 			((aNode isKindOf: RBMessageNode) and: [aNode isBinary]) ifTrue:
 				[(dict at: 'BinaryMessages' ifAbsentPut: 
-					OrderedCollection new) add: RBMessageNode].
+					OrderedCollection new) add: (aNode keywordsPositions at: 1)].
 			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue:
 				[(dict at: 'KeywordMessages' ifAbsentPut: 
-					OrderedCollection new) add: RBMessageNode].
+					OrderedCollection new) add: (aNode keywordsPositions at: 1)].
 			(aNode isKindOf: RBBlockNode) ifTrue: [(dict at: 'Blocks'
-				ifAbsentPut: OrderedCollection new) add: RBBlockNode].
+				ifAbsentPut: OrderedCollection new) add: (aNode left)].
 			(aNode isKindOf: RBAssignmentNode) ifTrue: [(dict at:
 				'Assignments' ifAbsentPut: OrderedCollection new)
-					add: RBAssignmentNode].
+					add: (aNode assignment)].
 			(aNode isKindOf: RBSuperNode) ifTrue: [(dict at: 'SuperCalls'
-				ifAbsentPut: OrderedCollection new) add: RBSuperNode].
+				ifAbsentPut: OrderedCollection new) add: (aNode start)].
 			(aNode isKindOf: RBLiteralArrayNode) ifTrue: [(dict at:
 				'LiteralArrays' ifAbsentPut: OrderedCollection new)
-					add: RBLiteralArrayNode].
+					add: (aNode start)].
 			(aNode isKindOf: RBCascadeNode) ifTrue: [(dict at: 'Cascades'
-				ifAbsentPut: OrderedCollection new) add: RBCascadeNode].
+				ifAbsentPut: OrderedCollection new) add: (aNode semicolons)].
 			(aNode isKindOf: RBReturnNode) ifTrue: [(dict at: 'Return'
-				ifAbsentPut: OrderedCollection new) add: RBReturnNode].
+				ifAbsentPut: OrderedCollection new) add: (aNode return)].
 			((aNode isKindOf: RBVariableNode) and: [ aNode isArg ]) ifTrue:
 				[(dict at: 'ArgumentVariables' ifAbsentPut:
-					OrderedCollection new) add: RBVariableNode ].
+					OrderedCollection new) add: (aNode start) ].
 			((aNode isKindOf: RBVariableNode) and: [ aNode isGlobal ])
 				ifTrue: [(dict at: 'GlobalVariables' ifAbsentPut: 
-					OrderedCollection new) add: RBVariableNode ].
+					OrderedCollection new) add: (aNode start) ].
 			(((aNode isKindOf: RBVariableNode) and: [ aNode isTemp ])
 				and: [ aNode isArg not ]) ifTrue: [(dict at:
 					'TemporaryVariables' ifAbsentPut: OrderedCollection new)
-						add: RBVariableNode ].
+						add: (aNode start) ].
 	].
 	
 	^ aView explicit
@@ -128,9 +128,11 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 				styler: (BrRBTextStyler new classOrMetaClass: self methodClass);
 				text: text.
 			"///"
-			list := BrColumnedList new.
-			list margin: (BlInsets all: 10).
-			list items: (dict associations).
+			list := BrColumnedList new
+				display: [ 
+					(dict associations) 
+						sorted: [ :x :y | x name < y name ] ].
+			list margin: (BlInsets all: 30).
 			list column
 				title: 'Elements';
 				stencil: [:each | BrColumnCellLabelStencil matchParent: each key].
