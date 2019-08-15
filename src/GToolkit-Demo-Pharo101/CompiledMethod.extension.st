@@ -117,7 +117,7 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 	].
 	
 	^ aView explicit
-		title: 'Underline';
+		title: 'TestView';
 		stencil: [
 			| source text editorElement list |
 			source := self sourceCode.
@@ -132,7 +132,7 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 			list margin: (BlInsets all: 10).
 			list items: (dict associations).
 			list column
-				title: 'Node';
+				title: 'Elements';
 				stencil: [:each | BrColumnCellLabelStencil matchParent: each key].
 			"///"
 			BlElement new
