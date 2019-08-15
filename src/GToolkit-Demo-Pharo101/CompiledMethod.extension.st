@@ -119,10 +119,10 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 	^ aView explicit
 		title: 'TestView';
 		stencil: [
-			| source text editorElement list |
+			| source text editorElement list k z h|
 			source := self sourceCode.
 			text := source asRopedText.
-			(text from: 3 to: 5) attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color blue}.
+			"(text from: 3 to: 5) attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color blue}."
 			editorElement := BrEditor new
 				look: BrGlamorousCodeEditorLook new;
 				styler: (BrRBTextStyler new classOrMetaClass: self methodClass);
@@ -132,6 +132,13 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 				display: [ 
 					(dict associations) 
 						sorted: [ :x :y | x name < y name ] ].
+			list when: BrSelectionChanged do: [:selectedEvent | 
+				k := selectedEvent selectedInterval.
+				(k isNil) ifFalse: [ 
+					h := k at: 1. 
+					z := ((dict associations at: h) ).
+					self halt ]
+				].
 			list margin: (BlInsets all: 30).
 			list column
 				title: 'Elements';
