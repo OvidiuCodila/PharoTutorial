@@ -77,7 +77,7 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 			(aNode isKindOf: RBSelfNode) ifTrue: [
 				startPos := aNode start.
 				(dict at: 'SelfCalls' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize))].
+					add: (startPos -> (startPos + aNode name byteSize - 1))].
 			(aNode isKindOf: RBPragmaNode) ifTrue: [
 				(dict at: 'Pragmas' ifAbsentPut: OrderedCollection new)
 					add: (aNode left -> aNode right)].
@@ -87,15 +87,16 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 			((aNode isKindOf: RBMessageNode) and: [aNode isUnary]) ifTrue: [
 				startPos := aNode keywordsPositions at: 1.
 				(dict at: 'UnaryMessages' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode selector byteSize))].
+					add: (startPos -> (startPos + aNode selector byteSize - 1))].
 			((aNode isKindOf: RBMessageNode) and: [aNode isBinary]) ifTrue: [
 				startPos := aNode keywordsPositions at: 1.
 				(dict at: 'BinaryMessages' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode selector byteSize))].
+					add: (startPos -> (startPos + aNode selector byteSize - 1))].
 			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue: [
+				aNode selectorParts do: [].
 				startPos := aNode keywordsPositions at: 1.
 				(dict at: 'KeywordMessages' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode selector byteSize))].
+					add: (startPos -> (startPos + aNode selector byteSize - 1))].
 			(aNode isKindOf: RBBlockNode) ifTrue: [
 				(dict at: 'Blocks' ifAbsentPut: OrderedCollection new)
 					add: (aNode left -> aNode right)].
@@ -106,29 +107,30 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 			(aNode isKindOf: RBSuperNode) ifTrue: [
 				startPos := aNode start.
 				(dict at: 'SuperCalls' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize))].
+					add: (startPos -> (startPos + aNode name byteSize - 1))].
 			(aNode isKindOf: RBLiteralArrayNode) ifTrue: [(dict at:
 				'LiteralArrays' ifAbsentPut: OrderedCollection new)
 					add: (aNode start -> aNode stop)].
-			(aNode isKindOf: RBCascadeNode) ifTrue: [(dict at: 'Cascades'
-				ifAbsentPut: OrderedCollection new)
-					add: (aNode semicolons -> aNode semicolons)].
+			(aNode isKindOf: RBCascadeNode) ifTrue: [
+				startPos := aNode semicolons at: 1.
+				(dict at: 'Cascades' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> startPos)].
 			(aNode isKindOf: RBReturnNode) ifTrue: [(dict at: 'Return'
 				ifAbsentPut: OrderedCollection new)
 					add: (aNode return -> aNode return)].
 			((aNode isKindOf: RBVariableNode) and: [ aNode isArg ]) ifTrue: [
 				startPos := aNode start.
 				(dict at: 'ArgumentVariables' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize)) ].
+					add: (startPos -> (startPos + aNode name byteSize - 1)) ].
 			((aNode isKindOf: RBVariableNode) and: [ aNode isGlobal ]) ifTrue: [
 				startPos := aNode start.
 				(dict at: 'GlobalVariables' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize)) ].
+					add: (startPos -> (startPos + aNode name byteSize - 1)) ].
 			(((aNode isKindOf: RBVariableNode) and: [ aNode isTemp ])
 				and: [ aNode isArg not ]) ifTrue: [
 					startPos := aNode start.
 					(dict at: 'TemporaryVariables' ifAbsentPut: OrderedCollection new)
-						add: (startPos -> (startPos + aNode name byteSize)) ].
+						add: (startPos -> (startPos + aNode name byteSize - 1)) ].
 	].
 	
 	^ aView explicit
