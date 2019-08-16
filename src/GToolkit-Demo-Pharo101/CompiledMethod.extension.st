@@ -93,7 +93,6 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 				(dict at: 'BinaryMessages' ifAbsentPut: OrderedCollection new)
 					add: (startPos -> (startPos + aNode selector byteSize - 1))].
 			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue: [
-				aNode selectorParts do: [].
 				startPos := aNode keywordsPositions at: 1.
 				(dict at: 'KeywordMessages' ifAbsentPut: OrderedCollection new)
 					add: (startPos -> (startPos + aNode selector byteSize - 1))].
@@ -152,7 +151,8 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 						sorted: [ :x :y | x name < y name ] ]."
 			list when: BrSelectionChanged do: [:selectedEvent | 
 				k := selectedEvent selectedInterval.
-				(k isNil) ifFalse: [ 
+				(k isNil) ifFalse: [
+					text attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color white}.
 					h := k at: 1.
 					z := ((dict associations at: h) value).
 					z do: [:anAssoc |
