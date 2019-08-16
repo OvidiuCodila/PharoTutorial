@@ -93,9 +93,14 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 				(dict at: 'BinaryMessages' ifAbsentPut: OrderedCollection new)
 					add: (startPos -> (startPos + aNode selector byteSize - 1))].
 			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue: [
-				startPos := aNode keywordsPositions at: 1.
-				(dict at: 'KeywordMessages' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode selector byteSize - 1))].
+				| selectors positions currentSelector|
+				selectors := aNode selectorParts.
+				positions := aNode keywordsPositions.
+				1 to: (selectors size) do: [:anIndex |
+					currentSelector := selectors at: anIndex.
+					startPos := positions at: anIndex.
+					(dict at: 'KeywordMessages' ifAbsentPut: OrderedCollection new)
+						add: (startPos -> (startPos + currentSelector byteSize - 1))]].
 			(aNode isKindOf: RBBlockNode) ifTrue: [
 				(dict at: 'Blocks' ifAbsentPut: OrderedCollection new)
 					add: (aNode left -> aNode right)].
