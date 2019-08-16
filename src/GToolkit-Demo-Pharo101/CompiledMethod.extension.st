@@ -72,7 +72,7 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 	<gtView>
 	| dict startPos |
 	dict := Dictionary new.
-	self parseTree doSemanticAnalysis allChildren allButFirst do:
+	self parseTree doSemanticAnalysis allChildren do:
 		[:aNode |
 			(aNode isKindOf: RBSelfNode) ifTrue: [
 				startPos := aNode start.
@@ -135,6 +135,10 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 					startPos := aNode start.
 					(dict at: 'TemporaryVariables' ifAbsentPut: OrderedCollection new)
 						add: (startPos -> (startPos + aNode name byteSize - 1)) ].
+			(aNode isKindOf: RBMethodNode) ifTrue: [
+				startPos := 1.
+				(dict at: 'MethodName' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode selector byteSize - 1))].
 	].
 	
 	^ aView explicit
