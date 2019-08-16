@@ -70,50 +70,65 @@ CompiledMethod >> gtTreeCustomViewFor: aView [
 { #category : #'*GToolkit-Demo-Pharo101' }
 CompiledMethod >> gtUnderlineViewFor: aView [
 	<gtView>
-	| dict |
+	| dict startPos |
 	dict := Dictionary new.
 	self parseTree doSemanticAnalysis allChildren allButFirst do:
 		[:aNode |
-			(aNode isKindOf: RBSelfNode) ifTrue: [(dict at: 'SelfCalls'
-				ifAbsentPut: OrderedCollection new) add: (aNode start)].
-			(aNode isKindOf: RBPragmaNode) ifTrue: [(dict at: 'Pragmas'
-				ifAbsentPut: OrderedCollection new) add: (aNode left)].
-			(aNode isKindOf: RBLiteralValueNode) ifTrue: [(dict at:
-				'LiteralValues' ifAbsentPut: OrderedCollection new) add:
-					(aNode start)].
-			((aNode isKindOf: RBMessageNode) and: [aNode isUnary]) ifTrue:
-				[(dict at: 'UnaryMessages' ifAbsentPut:
-					OrderedCollection new) add: (aNode keywordsPositions at: 1)].
-			((aNode isKindOf: RBMessageNode) and: [aNode isBinary]) ifTrue:
-				[(dict at: 'BinaryMessages' ifAbsentPut: 
-					OrderedCollection new) add: (aNode keywordsPositions at: 1)].
-			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue:
-				[(dict at: 'KeywordMessages' ifAbsentPut: 
-					OrderedCollection new) add: (aNode keywordsPositions at: 1)].
-			(aNode isKindOf: RBBlockNode) ifTrue: [(dict at: 'Blocks'
-				ifAbsentPut: OrderedCollection new) add: (aNode left)].
-			(aNode isKindOf: RBAssignmentNode) ifTrue: [(dict at:
-				'Assignments' ifAbsentPut: OrderedCollection new)
-					add: (aNode assignment)].
-			(aNode isKindOf: RBSuperNode) ifTrue: [(dict at: 'SuperCalls'
-				ifAbsentPut: OrderedCollection new) add: (aNode start)].
+			(aNode isKindOf: RBSelfNode) ifTrue: [
+				startPos := aNode start.
+				(dict at: 'SelfCalls' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode name byteSize))].
+			(aNode isKindOf: RBPragmaNode) ifTrue: [
+				(dict at: 'Pragmas' ifAbsentPut: OrderedCollection new)
+					add: (aNode left -> aNode right)].
+			(aNode isKindOf: RBLiteralValueNode) ifTrue: [
+				(dict at: 'LiteralValues' ifAbsentPut: OrderedCollection new)
+					add: (aNode start -> aNode stop)].
+			((aNode isKindOf: RBMessageNode) and: [aNode isUnary]) ifTrue: [
+				startPos := aNode keywordsPositions at: 1.
+				(dict at: 'UnaryMessages' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode selector byteSize))].
+			((aNode isKindOf: RBMessageNode) and: [aNode isBinary]) ifTrue: [
+				startPos := aNode keywordsPositions at: 1.
+				(dict at: 'BinaryMessages' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode selector byteSize))].
+			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue: [
+				startPos := aNode keywordsPositions at: 1.
+				(dict at: 'KeywordMessages' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode selector byteSize))].
+			(aNode isKindOf: RBBlockNode) ifTrue: [
+				(dict at: 'Blocks' ifAbsentPut: OrderedCollection new)
+					add: (aNode left -> aNode right)].
+			(aNode isKindOf: RBAssignmentNode) ifTrue: [
+				startPos := aNode assignment.
+				(dict at: 'Assignments' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + 1))].
+			(aNode isKindOf: RBSuperNode) ifTrue: [
+				startPos := aNode start.
+				(dict at: 'SuperCalls' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode name byteSize))].
 			(aNode isKindOf: RBLiteralArrayNode) ifTrue: [(dict at:
 				'LiteralArrays' ifAbsentPut: OrderedCollection new)
-					add: (aNode start)].
+					add: (aNode start -> aNode stop)].
 			(aNode isKindOf: RBCascadeNode) ifTrue: [(dict at: 'Cascades'
-				ifAbsentPut: OrderedCollection new) add: (aNode semicolons)].
+				ifAbsentPut: OrderedCollection new)
+					add: (aNode semicolons -> aNode semicolons)].
 			(aNode isKindOf: RBReturnNode) ifTrue: [(dict at: 'Return'
-				ifAbsentPut: OrderedCollection new) add: (aNode return)].
-			((aNode isKindOf: RBVariableNode) and: [ aNode isArg ]) ifTrue:
-				[(dict at: 'ArgumentVariables' ifAbsentPut:
-					OrderedCollection new) add: (aNode start) ].
-			((aNode isKindOf: RBVariableNode) and: [ aNode isGlobal ])
-				ifTrue: [(dict at: 'GlobalVariables' ifAbsentPut: 
-					OrderedCollection new) add: (aNode start) ].
+				ifAbsentPut: OrderedCollection new)
+					add: (aNode return -> aNode return)].
+			((aNode isKindOf: RBVariableNode) and: [ aNode isArg ]) ifTrue: [
+				startPos := aNode start.
+				(dict at: 'ArgumentVariables' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode name byteSize)) ].
+			((aNode isKindOf: RBVariableNode) and: [ aNode isGlobal ]) ifTrue: [
+				startPos := aNode start.
+				(dict at: 'GlobalVariables' ifAbsentPut: OrderedCollection new)
+					add: (startPos -> (startPos + aNode name byteSize)) ].
 			(((aNode isKindOf: RBVariableNode) and: [ aNode isTemp ])
-				and: [ aNode isArg not ]) ifTrue: [(dict at:
-					'TemporaryVariables' ifAbsentPut: OrderedCollection new)
-						add: (aNode start) ].
+				and: [ aNode isArg not ]) ifTrue: [
+					startPos := aNode start.
+					(dict at: 'TemporaryVariables' ifAbsentPut: OrderedCollection new)
+						add: (startPos -> (startPos + aNode name byteSize)) ].
 	].
 	
 	^ aView explicit
@@ -128,16 +143,19 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 				styler: (BrRBTextStyler new classOrMetaClass: self methodClass);
 				text: text.
 			"///"
-			list := BrColumnedList new
-				display: [ 
+			list := BrColumnedList new.
+			list items: (dict associations).
+				"display: [ 
 					(dict associations) 
-						sorted: [ :x :y | x name < y name ] ].
+						sorted: [ :x :y | x name < y name ] ]."
 			list when: BrSelectionChanged do: [:selectedEvent | 
 				k := selectedEvent selectedInterval.
 				(k isNil) ifFalse: [ 
-					h := k at: 1. 
-					z := ((dict associations at: h) ).
-					self halt ]
+					h := k at: 1.
+					z := ((dict associations at: h) value).
+					z do: [:anAssoc |
+						(text from: (anAssoc key) to: (anAssoc value)) attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color blue} ].
+					editorElement text: text]
 				].
 			list margin: (BlInsets all: 30).
 			list column

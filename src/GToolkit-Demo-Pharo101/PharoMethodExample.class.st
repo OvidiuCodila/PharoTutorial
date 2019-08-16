@@ -15,7 +15,7 @@ PharoMethodExample >> exampleWithNumber: x [
     return and cascade. It has both zero argument and one argument blocks."
 	 <syntaxOn: #postcard>
     | y |
-    true & false not & (nil isNil) ifFalse: [self halt].
+    true & false not & (nil isNil) ifTrue: [100] ifFalse: [self halt].
     y := self size + super size.
     #($a #a "a" 1 1.0)
         do: [ :each |
