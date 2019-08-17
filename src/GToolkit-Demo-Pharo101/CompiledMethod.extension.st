@@ -1,61 +1,94 @@
 Extension { #name : #CompiledMethod }
 
 { #category : #'*GToolkit-Demo-Pharo101' }
-CompiledMethod >> gtNodesViewFor: aView [
-	<gtView>
-	| dict |
-	dict := Dictionary new.
-	self parseTree doSemanticAnalysis allChildren allButFirst do:
+CompiledMethod >> buildNodeDictionary [
+	| aStartPos aDictionary |
+	
+	aDictionary := Dictionary new.
+	self parseTree doSemanticAnalysis allChildren do:
 		[:aNode |
-			(aNode isKindOf: RBSelfNode) ifTrue: [(dict at: 'SelfCalls'
-				ifAbsentPut: OrderedCollection new) add: RBSelfNode].
-			(aNode isKindOf: RBPragmaNode) ifTrue: [(dict at: 'Pragmas'
-				ifAbsentPut: OrderedCollection new) add: RBPragmaNode].
-			(aNode isKindOf: RBLiteralValueNode) ifTrue: [(dict at:
-				'LiteralValues' ifAbsentPut: OrderedCollection new) add:
-					RBLiteralValueNode].
-			((aNode isKindOf: RBMessageNode) and: [aNode isUnary]) ifTrue:
-				[(dict at: 'UnaryMessages' ifAbsentPut:
-					OrderedCollection new) add: RBMessageNode].
-			((aNode isKindOf: RBMessageNode) and: [aNode isBinary]) ifTrue:
-				[(dict at: 'BinaryMessages' ifAbsentPut: 
-					OrderedCollection new) add: RBMessageNode].
-			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue:
-				[(dict at: 'KeywordMessages' ifAbsentPut: 
-					OrderedCollection new) add: RBMessageNode].
-			(aNode isKindOf: RBBlockNode) ifTrue: [(dict at: 'Blocks'
-				ifAbsentPut: OrderedCollection new) add: RBBlockNode].
-			(aNode isKindOf: RBAssignmentNode) ifTrue: [(dict at:
-				'Assignments' ifAbsentPut: OrderedCollection new)
-					add: RBAssignmentNode].
-			(aNode isKindOf: RBSuperNode) ifTrue: [(dict at: 'SuperCalls'
-				ifAbsentPut: OrderedCollection new) add: RBSuperNode].
-			(aNode isKindOf: RBLiteralArrayNode) ifTrue: [(dict at:
-				'LiteralArrays' ifAbsentPut: OrderedCollection new)
-					add: RBLiteralArrayNode].
-			(aNode isKindOf: RBCascadeNode) ifTrue: [(dict at: 'Cascades'
-				ifAbsentPut: OrderedCollection new) add: RBCascadeNode].
-			(aNode isKindOf: RBReturnNode) ifTrue: [(dict at: 'Return'
-				ifAbsentPut: OrderedCollection new) add: RBReturnNode].
-			((aNode isKindOf: RBVariableNode) and: [ aNode isArg ]) ifTrue:
-				[(dict at: 'ArgumentVariables' ifAbsentPut:
-					OrderedCollection new) add: RBVariableNode ].
-			((aNode isKindOf: RBVariableNode) and: [ aNode isGlobal ])
-				ifTrue: [(dict at: 'GlobalVariables' ifAbsentPut: 
-					OrderedCollection new) add: RBVariableNode ].
+			(aNode isKindOf: RBSelfNode) ifTrue: [
+				aStartPos := aNode start.
+				(aDictionary at: 'Self Nodes' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + aNode name byteSize - 1))].
+			(aNode isKindOf: RBPragmaNode) ifTrue: [
+				(aDictionary at: 'Pragmas' ifAbsentPut: OrderedCollection new)
+					add: (aNode left -> aNode right)].
+			(aNode isKindOf: RBLiteralValueNode) ifTrue: [
+				(aDictionary at: 'Literal Values' ifAbsentPut: OrderedCollection new)
+					add: (aNode start -> aNode stop)].
+			((aNode isKindOf: RBMessageNode) and: [aNode isUnary]) ifTrue: [
+				aStartPos := aNode keywordsPositions at: 1.
+				(aDictionary at: 'Unary Messages' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + aNode selector byteSize - 1))].
+			((aNode isKindOf: RBMessageNode) and: [aNode isBinary]) ifTrue: [
+				aStartPos := aNode keywordsPositions at: 1.
+				(aDictionary at: 'Binary Messages' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + aNode selector byteSize - 1))].
+			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue: [
+				| selectors positions currentSelector|
+				selectors := aNode selectorParts.
+				positions := aNode keywordsPositions.
+				1 to: (selectors size) do: [:anIndex |
+					currentSelector := selectors at: anIndex.
+					aStartPos := positions at: anIndex.
+					(aDictionary at: 'Keyword Messages' ifAbsentPut: OrderedCollection new)
+						add: (aStartPos -> (aStartPos + currentSelector byteSize - 1))]].
+			(aNode isKindOf: RBBlockNode) ifTrue: [
+				(aDictionary at: 'Blocks' ifAbsentPut: OrderedCollection new)
+					add: (aNode left -> aNode right)].
+			(aNode isKindOf: RBAssignmentNode) ifTrue: [
+				aStartPos := aNode assignment.
+				(aDictionary at: 'Assignments' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + 1))].
+			(aNode isKindOf: RBSuperNode) ifTrue: [
+				aStartPos := aNode start.
+				(aDictionary at: 'Super Nodes' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + aNode name byteSize - 1))].
+			(aNode isKindOf: RBLiteralArrayNode) ifTrue: [(aDictionary at:
+				'Literal Arrays' ifAbsentPut: OrderedCollection new)
+					add: (aNode start -> aNode stop)].
+			(aNode isKindOf: RBCascadeNode) ifTrue: [
+				aStartPos := aNode semicolons at: 1.
+				(aDictionary at: 'Cascade Operators' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> aStartPos)].
+			(aNode isKindOf: RBReturnNode) ifTrue: [(aDictionary at: 'Return Node'
+				ifAbsentPut: OrderedCollection new)
+					add: (aNode return -> aNode return)].
+			((aNode isKindOf: RBVariableNode) and: [ aNode isArg ]) ifTrue: [
+				aStartPos := aNode start.
+				(aDictionary at: 'Argument Variables' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + aNode name byteSize - 1)) ].
+			((aNode isKindOf: RBVariableNode) and: [ aNode isGlobal ]) ifTrue: [
+				aStartPos := aNode start.
+				(aDictionary at: 'Global Variables' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + aNode name byteSize - 1)) ].
 			(((aNode isKindOf: RBVariableNode) and: [ aNode isTemp ])
-				and: [ aNode isArg not ]) ifTrue: [(dict at:
-					'TemporaryVariables' ifAbsentPut: OrderedCollection new)
-						add: RBVariableNode ].
+				and: [ aNode isArg not ]) ifTrue: [
+					aStartPos := aNode start.
+					(aDictionary at: 'Temporary Variables' ifAbsentPut: OrderedCollection new)
+						add: (aStartPos -> (aStartPos + aNode name byteSize - 1)) ].
+			(aNode isKindOf: RBMethodNode) ifTrue: [
+				aStartPos := 1.
+				(aDictionary at: 'Method Name' ifAbsentPut: OrderedCollection new)
+					add: (aStartPos -> (aStartPos + aNode selector byteSize - 1))].
 	].
 	
-	^ aView columnedList
-		title: 'Nodes';
-		items: [dict associations];
-		column: 'Category'
-			item: [:each | each key];
-		column: 'Elements'
-			item: [:each | each value].
+	^ aDictionary.
+]
+
+{ #category : #'*GToolkit-Demo-Pharo101' }
+CompiledMethod >> buildNodeListFrom: aDictionary [
+	| aNodeList |
+	
+	aNodeList := BrColumnedList new.
+	aNodeList items: (aDictionary associations).
+	aNodeList margin: (BlInsets all: 30).
+	aNodeList column
+		title: 'Elements';
+		stencil: [:each | BrColumnCellLabelStencil matchParent: each key].
+		
+	^ aNodeList.
 ]
 
 { #category : #'*GToolkit-Demo-Pharo101' }
@@ -70,109 +103,32 @@ CompiledMethod >> gtTreeCustomViewFor: aView [
 { #category : #'*GToolkit-Demo-Pharo101' }
 CompiledMethod >> gtUnderlineViewFor: aView [
 	<gtView>
-	| dict startPos |
-	dict := Dictionary new.
-	self parseTree doSemanticAnalysis allChildren do:
-		[:aNode |
-			(aNode isKindOf: RBSelfNode) ifTrue: [
-				startPos := aNode start.
-				(dict at: 'SelfCalls' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize - 1))].
-			(aNode isKindOf: RBPragmaNode) ifTrue: [
-				(dict at: 'Pragmas' ifAbsentPut: OrderedCollection new)
-					add: (aNode left -> aNode right)].
-			(aNode isKindOf: RBLiteralValueNode) ifTrue: [
-				(dict at: 'LiteralValues' ifAbsentPut: OrderedCollection new)
-					add: (aNode start -> aNode stop)].
-			((aNode isKindOf: RBMessageNode) and: [aNode isUnary]) ifTrue: [
-				startPos := aNode keywordsPositions at: 1.
-				(dict at: 'UnaryMessages' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode selector byteSize - 1))].
-			((aNode isKindOf: RBMessageNode) and: [aNode isBinary]) ifTrue: [
-				startPos := aNode keywordsPositions at: 1.
-				(dict at: 'BinaryMessages' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode selector byteSize - 1))].
-			((aNode isKindOf: RBMessageNode) and: [aNode isKeyword]) ifTrue: [
-				| selectors positions currentSelector|
-				selectors := aNode selectorParts.
-				positions := aNode keywordsPositions.
-				1 to: (selectors size) do: [:anIndex |
-					currentSelector := selectors at: anIndex.
-					startPos := positions at: anIndex.
-					(dict at: 'KeywordMessages' ifAbsentPut: OrderedCollection new)
-						add: (startPos -> (startPos + currentSelector byteSize - 1))]].
-			(aNode isKindOf: RBBlockNode) ifTrue: [
-				(dict at: 'Blocks' ifAbsentPut: OrderedCollection new)
-					add: (aNode left -> aNode right)].
-			(aNode isKindOf: RBAssignmentNode) ifTrue: [
-				startPos := aNode assignment.
-				(dict at: 'Assignments' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + 1))].
-			(aNode isKindOf: RBSuperNode) ifTrue: [
-				startPos := aNode start.
-				(dict at: 'SuperCalls' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize - 1))].
-			(aNode isKindOf: RBLiteralArrayNode) ifTrue: [(dict at:
-				'LiteralArrays' ifAbsentPut: OrderedCollection new)
-					add: (aNode start -> aNode stop)].
-			(aNode isKindOf: RBCascadeNode) ifTrue: [
-				startPos := aNode semicolons at: 1.
-				(dict at: 'Cascades' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> startPos)].
-			(aNode isKindOf: RBReturnNode) ifTrue: [(dict at: 'Return'
-				ifAbsentPut: OrderedCollection new)
-					add: (aNode return -> aNode return)].
-			((aNode isKindOf: RBVariableNode) and: [ aNode isArg ]) ifTrue: [
-				startPos := aNode start.
-				(dict at: 'ArgumentVariables' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize - 1)) ].
-			((aNode isKindOf: RBVariableNode) and: [ aNode isGlobal ]) ifTrue: [
-				startPos := aNode start.
-				(dict at: 'GlobalVariables' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode name byteSize - 1)) ].
-			(((aNode isKindOf: RBVariableNode) and: [ aNode isTemp ])
-				and: [ aNode isArg not ]) ifTrue: [
-					startPos := aNode start.
-					(dict at: 'TemporaryVariables' ifAbsentPut: OrderedCollection new)
-						add: (startPos -> (startPos + aNode name byteSize - 1)) ].
-			(aNode isKindOf: RBMethodNode) ifTrue: [
-				startPos := 1.
-				(dict at: 'MethodName' ifAbsentPut: OrderedCollection new)
-					add: (startPos -> (startPos + aNode selector byteSize - 1))].
-	].
+	| aDictionary |
+	
+	aDictionary := self buildNodeDictionary.
 	
 	^ aView explicit
 		title: 'TestView';
 		stencil: [
-			| source text editorElement list k z h|
-			source := self sourceCode.
-			text := source asRopedText.
-			"(text from: 3 to: 5) attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color blue}."
+			| text editorElement aNodesList aSelectedInterval aSelectedIndex aPositionsCollection|
+			text := self sourceCode asRopedText.
 			editorElement := BrEditor new
 				look: BrGlamorousCodeEditorLook new;
 				styler: (BrRBTextStyler new classOrMetaClass: self methodClass);
 				text: text.
-			"///"
-			list := BrColumnedList new.
-			list items: (dict associations).
-				"display: [ 
-					(dict associations) 
-						sorted: [ :x :y | x name < y name ] ]."
-			list when: BrSelectionChanged do: [:selectedEvent | 
-				k := selectedEvent selectedInterval.
-				(k isNil) ifFalse: [
+
+			aNodesList := self buildNodeListFrom: aDictionary.
+			aNodesList when: BrSelectionChanged do: [:selectedEvent | 
+				aSelectedInterval := selectedEvent selectedInterval.
+				(aSelectedInterval isNil) ifFalse: [
 					text attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color white}.
-					h := k at: 1.
-					z := ((dict associations at: h) value).
-					z do: [:anAssoc |
+					aSelectedIndex := aSelectedInterval at: 1.
+					aPositionsCollection := ((aDictionary associations at: aSelectedIndex) value).
+					aPositionsCollection do: [:anAssoc |
 						(text from: (anAssoc key) to: (anAssoc value)) attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color blue} ].
 					editorElement text: text]
 				].
-			list margin: (BlInsets all: 30).
-			list column
-				title: 'Elements';
-				stencil: [:each | BrColumnCellLabelStencil matchParent: each key].
-			"///"
+
 			BlElement new
 				layout: BlLinearLayout horizontal;
 				constraintsDo: [ :c |
@@ -193,6 +149,6 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 					margin: (BlInsets all: 20);
 					padding: (BlInsets all: 20);
 					size: 500@500;
-					addChild: list).
+					addChild: aNodesList).
 		].
 ]
