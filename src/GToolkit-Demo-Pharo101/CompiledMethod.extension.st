@@ -108,7 +108,7 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 	aDictionary := self buildNodeDictionary.
 	
 	^ aView explicit
-		title: 'TestView';
+		title: 'Nodes Underline' translated;
 		stencil: [
 			| text editorElement aNodesList aSelectedInterval aSelectedIndex aPositionsCollection|
 			text := self sourceCode asRopedText.
@@ -121,11 +121,13 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 			aNodesList when: BrSelectionChanged do: [:selectedEvent | 
 				aSelectedInterval := selectedEvent selectedInterval.
 				(aSelectedInterval isNil) ifFalse: [
-					text attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color white}.
+					text attributes: {
+						BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color white}.
 					aSelectedIndex := aSelectedInterval at: 1.
 					aPositionsCollection := ((aDictionary associations at: aSelectedIndex) value).
 					aPositionsCollection do: [:anAssoc |
-						(text from: (anAssoc key) to: (anAssoc value)) attributes: {BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color blue} ].
+						(text from: (anAssoc key) to: (anAssoc value)) attributes: {
+							BlTextUnderlineAttribute new beNotOverwritableByStyler; paint: Color blue} ].
 					editorElement text: text]
 				].
 
@@ -134,21 +136,30 @@ CompiledMethod >> gtUnderlineViewFor: aView [
 				constraintsDo: [ :c |
 					c horizontal matchParent.
 					c vertical matchParent ];
-				addChild: (BlElement new 
+				addChild: (BlElement new
+					layout: BlLinearLayout horizontal;
+					constraintsDo: [ :c |
+						c horizontal matchParent.
+						c vertical matchParent ];
 					look: BrShadowLook; 
 					background: Color white;
 					margin: (BlInsets all: 20);
-					size: 500@500;
-					addChild: editorElement);
+					addChild: (editorElement
+						constraintsDo: [ :c |
+							c horizontal matchParent.
+							c vertical matchParent ]));
 				addChild: (BlElement new
+					layout: BlLinearLayout horizontal;
 					constraintsDo: [ :c |
-						c linear horizontal alignCenter.
-						c vertical fitContent ];
+						c horizontal matchParent.
+						c vertical matchParent ];
 					look: BrShadowLook; 
 					background: Color white;
 					margin: (BlInsets all: 20);
 					padding: (BlInsets all: 20);
-					size: 500@500;
-					addChild: aNodesList).
+					addChild: (aNodesList
+						constraintsDo: [ :c |
+						c horizontal matchParent.
+						c vertical matchParent ])).
 		].
 ]
